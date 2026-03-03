@@ -1,0 +1,16 @@
+\begin{tabular}{lrrrrr}
+\toprule
+                 Estimator & Runtime (s , SD) &  ATE RMSE &  Mean ATE SE &  ATE Coverage &  Mean CATE Coverage \\
+\midrule
+    Bayesian Causal Forest &      260.6 (9.6) &     0.023 &        0.011 &          0.48 &                0.86 \\
+             Causal Forest &       25.3 (1.8) &     0.027 &        0.009 &          0.18 &                0.80 \\
+       Standard Linear DML &        2.1 (0.1) &     0.026 &        0.009 &          0.24 &                0.84 \\
+                 Lasso DML &      225.0 (7.9) &     0.025 &        0.010 &          0.28 &                0.26 \\
+                   GBR DML &      262.8 (7.7) &     0.026 &        0.125 &          1.00 &                0.83 \\
+Standard Linear DR-Learner &        2.2 (0.1) &     0.028 &        0.046 &          1.00 &                0.85 \\
+          Lasso DR-Learner &      230.5 (8.4) &     0.028 &        0.008 &          0.14 &                0.25 \\
+            GBR DR-Learner &      269.7 (7.3) &     0.028 &        0.132 &          1.00 &                0.81 \\
+           Lasso X-Learner &      116.4 (3.8) &     0.008 &        0.035 &          1.00 &                0.86 \\
+             GBR X-Learner &      158.6 (4.3) &     0.009 &        0.088 &          1.00 &                0.83 \\
+\bottomrule
+\end{tabular}

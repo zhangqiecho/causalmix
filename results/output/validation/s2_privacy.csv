@@ -1,0 +1,7 @@
+Category,Metric,Direction,BGMM,Gaussian
+DCR,Protection Fraction,↑ better,0.573,0.694
+DCR,Distance Ratio (mean),↑ better,2.246,3.335
+DCR,Distance Ratio (p5),↑ better,0.168,0.508
+DCR,Distance Ratio (p50),↑ better,1.028,1.118
+DCR,Distance Ratio (p95),↑ better,4.276,6.127
+DCR,Standardized Distance Ratio,↑ better,0.281,0.333

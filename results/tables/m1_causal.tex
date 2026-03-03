@@ -1,0 +1,21 @@
+\begin{tabular}{lllrr}
+\toprule
+            Category &                        Metric &                                Direction &          BGMM &      Gaussian \\
+\midrule
+    Treatment Effect &                  CATE/ITE MAE &                                 ↓ better & 0.003 (0.000) & 0.004 (0.000) \\
+    Treatment Effect &              CATE Correlation &                                 ↑ better &           NaN &           NaN \\
+    Treatment Effect &                     ATE Error &                                 ↓ better & 0.000 (0.000) & 0.002 (0.000) \\
+    Treatment Effect & TE Distribution Distance (W1) &                                 ↓ better & 0.003 (0.000) & 0.004 (0.000) \\
+         Confounding &               Confounding MAE &                                 ↓ better & 0.000 (0.000) & 0.000 (0.000) \\
+         Confounding &          Group-wise MAE (T=0) &                                 ↓ better & 0.000 (0.000) & 0.000 (0.000) \\
+         Confounding &          Group-wise MAE (T=1) &                                 ↓ better & 0.000 (0.000) & 0.000 (0.000) \\
+         Confounding &        Confounding Dist. (W1) &                                 ↓ better & 0.000 (0.000) & 0.000 (0.000) \\
+   Overlap (decoder) &               Δ vs target MSE &                                 ↓ better & 0.000 (0.000) & 0.000 (0.000) \\
+   Overlap (decoder) &     Fraction within tolerance &                                 ↑ better & 1.000 (0.000) & 1.000 (0.000) \\
+Overlap (propensity) &                Propensity AUC & closer to 0.5 indicates stronger overlap & 0.539 (0.007) & 0.536 (0.008) \\
+Overlap (propensity) & Histogram overlap coefficient &                                ↑ better. & 0.940 (0.017) & 0.947 (0.015) \\
+Overlap (propensity) &       Common support fraction &                                ↑ better. & 1.000 (0.000) & 1.000 (0.000) \\
+Overlap (propensity) & Common support fraction (T=0) &                                ↑ better. & 1.000 (0.000) & 1.000 (0.000) \\
+Overlap (propensity) & Common support fraction (T=1) &                                 ↑ better & 1.000 (0.000) & 1.000 (0.000) \\
+\bottomrule
+\end{tabular}

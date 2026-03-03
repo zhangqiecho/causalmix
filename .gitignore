@@ -1,0 +1,5 @@
+# Ignore private data folder
+data/private/
+
+# Ignore a previous output folder
+output/ate_0.1/

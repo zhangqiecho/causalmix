@@ -1,0 +1,16 @@
+Category,Metric,Direction,BGMM,Gaussian
+Treatment Effect,CATE/ITE MAE,↓ better,0.002,0.002
+Treatment Effect,CATE Correlation,↑ better,0.981,0.964
+Treatment Effect,ATE Error,↓ better,0.001,0.001
+Treatment Effect,TE Distribution Distance (W1),↓ better,0.002,0.002
+Confounding,Confounding MAE,↓ better,0.005,0.004
+Confounding,Group-wise MAE (T=0),↓ better,0.004,0.004
+Confounding,Group-wise MAE (T=1),↓ better,0.005,0.004
+Confounding,Confounding Dist. (W1),↓ better,0.005,0.004
+Overlap (decoder),Δ vs target MSE,↓ better,0.04,0.04
+Overlap (decoder),Fraction within tolerance,↑ better,1.0,1.0
+Overlap (propensity),Propensity AUC,closer to 0.5 indicates stronger overlap,0.561,0.581
+Overlap (propensity),Histogram overlap coefficient,↑ better.,0.897,0.881
+Overlap (propensity),Common support fraction,↑ better.,1.0,1.0
+Overlap (propensity),Common support fraction (T=0),↑ better.,1.0,1.0
+Overlap (propensity),Common support fraction (T=1),↑ better,1.0,1.0

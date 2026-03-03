@@ -1,0 +1,11 @@
+Category,Metric,Direction,BGMM,Gaussian
+Marginal (cont.),Normalized Wasserstein (mean),↓ better,0.047,0.232
+Marginal (cont.),KSComplement (mean),↑ better,0.977,0.874
+Marginal (disc.),TVComplement (mean),↑ better,0.973,0.953
+Pairwise (cont–cont.),CorrelationSimilarity,↑ better,0.974,0.866
+Pairwise (all vars),SU similarity (mean),↑ better,0.992,0.991
+Pairwise (disc–disc.),ContingencySimilarity (mean),↑ better,0.951,0.917
+Conditional (all except C),Weighted MMD$^2$,↓ better,0.005,0.006
+Conditional (all except C),Normalized $MMD$^2$ ratio vs real,↓ better; 1 = real-data baseline,1.762,2.216
+Joint (all vars),Normalized Energy Distance,↓ better,0.004,0.014
+Joint (all vars),C2ST (AUC complement),↑ better.,0.774,0.594
