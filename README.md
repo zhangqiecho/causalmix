@@ -1,6 +1,10 @@
 # CausalMix
 
-**CausalMix** is a variational generative framework for causal inference. Because individual causal effects are unobservable, method evaluation and study design in causal inference rely on synthetic data with known counterfactuals. CausalMix provides a calibrated sandbox that generates realistic mixed-type tabular data while enabling explicit control over treatment effects, confounding, and overlap via a conditional VAE with a Gaussian mixture latent prior. This supports principled estimator benchmarking, hyperparameter tuning, and simulation-based study design under data-generating processes that resemble real-world structure while preserving access to causal truth.
+[![arXiv](https://img.shields.io/badge/arXiv-2603.03587-b31b1b.svg)](https://arxiv.org/abs/2603.03587)
+
+**CausalMix** is a variational generative framework for causal inference. Because individual causal effects are unobservable, method evaluation and study design in causal inference rely on synthetic data with known counterfactuals. CausalMix provides a calibrated sandbox that generates realistic mixed-type tabular data while enabling explicit control over treatment effects, confounding, and overlap via a conditional VAE with a Gaussian mixture latent prior. 
+
+This supports principled estimator benchmarking, hyperparameter tuning, and simulation-based study design under data-generating processes that resemble real-world structure while preserving access to causal truth.
 
 ---
 
@@ -187,7 +191,7 @@ Demo datasets illustrate usage and do **not** reproduce the empirical results in
 - Paths are managed via `notebooks/set_up.py`.
 - Outputs are saved under `results/`.
 
----
+<!-- --- -->
 
 <!-- ## Citation
 
