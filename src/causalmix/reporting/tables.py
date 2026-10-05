@@ -55,9 +55,14 @@ def _models_to_dict(
 # =========================================================
 # Table A: Distributional Fidelity (from SynthEval.run_all)
 # =========================================================
+# update: include flexible options to generate the distributional fidelity table
 def build_table_distributional_fidelity(
     synth_results: Any,
     *,
+    include_marginal: bool = True,
+    include_pairwise: bool = True,
+    include_conditional: bool = True,
+    include_joint: bool = True,
     include_directions: bool = True,
     single_default_name: str = "BGMM",
 ) -> pd.DataFrame:
@@ -68,47 +73,108 @@ def build_table_distributional_fidelity(
     """
     models = _models_to_dict(synth_results, single_default_name=single_default_name)
 
-    rows = [
-        ("Marginal (cont.)", "Normalized Wasserstein (mean)",
-         "↓ better",
-         ("marginal_continuous", "aggregates", "mean_norm_wasserstein")),
+    rows = []
+    
+    if include_marginal:
+        rows.extend([
+            ("Marginal (cont.)", "Normalized Wasserstein (mean)",
+                "↓ better",
+                ("marginal_continuous", "aggregates", "mean_norm_wasserstein")),
 
-        ("Marginal (cont.)", "KSComplement (mean)",
-         "↑ better",
-         ("marginal_continuous", "aggregates", "mean_KSComplement")),
+            ("Marginal (cont.)", "KSComplement (mean)",
+                "↑ better",
+                ("marginal_continuous", "aggregates", "mean_KSComplement")),
 
-        ("Marginal (disc.)", "TVComplement (mean)",
-         "↑ better",
-         ("marginal_discrete", "aggregates", "mean_TVComplement")),
+            ("Marginal (disc.)", "TVComplement (mean)",
+                "↑ better",
+                ("marginal_discrete", "aggregates", "mean_TVComplement")),
+        ])
 
-        ("Pairwise (cont–cont.)", "CorrelationSimilarity",
-         "↑ better",
-         ("pairwise_continuous", "CorrelationSimilarity")),
+    if include_pairwise:
+        rows.extend([
+            ("Pairwise (cont–cont.)", "CorrelationSimilarity",
+                "↑ better",
+                ("pairwise_continuous", "CorrelationSimilarity")),
 
-        ("Pairwise (all vars)", "SU similarity (mean)",
-         "↑ better",
-         ("pairwise_mi", "SU_similarity_mean")),
+            ("Pairwise (all vars)", "SU similarity (mean)",
+                "↑ better",
+                ("pairwise_mi", "SU_similarity_mean")),
 
-        ("Pairwise (disc–disc.)", "ContingencySimilarity (mean)",
-         "↑ better",
-         ("pairwise_discrete", "ContingencySimilarity_mean")),
+            ("Pairwise (disc–disc.)", "ContingencySimilarity (mean)",
+                "↑ better",
+                ("pairwise_discrete", "ContingencySimilarity_mean")),
+        ])
 
-        ("Conditional (all except C)", "Weighted MMD$^2$",
-         "↓ better",
-         ("conditional_mmd2", "weighted_mean_mmd2")),
+    if include_conditional:
+        rows.extend([
+            ("Conditional (all except C)", "Weighted MMD$^2$",
+                "↓ better",
+                ("conditional_mmd2", "weighted_mean_mmd2")),
 
-        ("Conditional (all except C)", "Normalized MMD$^2$ ratio vs real",
-         "↓ better; 1 = real-data baseline",
-         ("conditional_mmd2", "normalized_ratio_vs_real")),
+            ("Conditional (all except C)", "Normalized MMD$^2$ ratio vs real",
+                "↓ better; 1 = real-data baseline",
+                ("conditional_mmd2", "normalized_ratio_vs_real")),
+        ])
 
-        ("Joint (all vars)", "Normalized Energy Distance",
-         "↓ better",
-         ("energy", "normalized_energy")),
+    if include_joint:
+        rows.extend([
+            ("Joint (all vars)", "Normalized Energy Distance",
+                "↓ better",
+                ("energy", "normalized_energy")),
 
-        ("Joint (all vars)", "C2ST (AUC complement)",
-         "↑ better",
-         ("c2st", "auc_complement")),
-    ]
+            ("Joint (all vars)", "C2ST (AUC complement)",
+                "↑ better",
+                ("c2st", "auc_complement")),
+        ])
+
+    if not rows:
+        cols = ["Category", "Metric"]
+        if include_directions:
+            cols.append("Direction")
+        cols.extend(models.keys())
+        return pd.DataFrame(columns=cols)
+
+    # rows = [
+    #     ("Marginal (cont.)", "Normalized Wasserstein (mean)",
+    #      "↓ better",
+    #      ("marginal_continuous", "aggregates", "mean_norm_wasserstein")),
+
+    #     ("Marginal (cont.)", "KSComplement (mean)",
+    #      "↑ better",
+    #      ("marginal_continuous", "aggregates", "mean_KSComplement")),
+
+    #     ("Marginal (disc.)", "TVComplement (mean)",
+    #      "↑ better",
+    #      ("marginal_discrete", "aggregates", "mean_TVComplement")),
+
+    #     ("Pairwise (cont–cont.)", "CorrelationSimilarity",
+    #      "↑ better",
+    #      ("pairwise_continuous", "CorrelationSimilarity")),
+
+    #     ("Pairwise (all vars)", "SU similarity (mean)",
+    #      "↑ better",
+    #      ("pairwise_mi", "SU_similarity_mean")),
+
+    #     ("Pairwise (disc–disc.)", "ContingencySimilarity (mean)",
+    #      "↑ better",
+    #      ("pairwise_discrete", "ContingencySimilarity_mean")),
+
+    #     ("Conditional (all except C)", "Weighted MMD$^2$",
+    #      "↓ better",
+    #      ("conditional_mmd2", "weighted_mean_mmd2")),
+
+    #     ("Conditional (all except C)", "Normalized MMD$^2$ ratio vs real",
+    #      "↓ better; 1 = real-data baseline",
+    #      ("conditional_mmd2", "normalized_ratio_vs_real")),
+
+    #     ("Joint (all vars)", "Normalized Energy Distance",
+    #      "↓ better",
+    #      ("energy", "normalized_energy")),
+
+    #     ("Joint (all vars)", "C2ST (AUC complement)",
+    #      "↑ better",
+    #      ("c2st", "auc_complement")),
+    # ]
 
     out_rows = []
     for category, metric, direction, path in rows:
@@ -130,73 +196,139 @@ def build_table_distributional_fidelity(
 def build_table_causal_structure(
     causal_results: Any,
     *,
+    include_effect: bool = True, # updated April 6, 2026: include options for each causal parameter
+    include_bias: bool = True,
+    include_overlap: bool = True,
     include_directions: bool = True,
     single_default_name: str = "BGMM",
 ) -> pd.DataFrame:
     """
-    causal_results:
-      - single dict output of CausalMix.causal_bgmm()/causal_gauss()
-      - OR dict: {model_name: causal_output_dict}
-    Each causal_output_dict should include:
-      - "causal_metrics": dataclass or dict
-      - "overlap": dict from overlap_diagnostics (namespaced keys)
-    """
+        Build a summary table of causal structure metrics.
+    
+        Parameters
+        ----------
+        causal_results:
+            - single dict output of CausalMix.causal_bgmm()/causal_gauss()
+            - OR dict: {model_name: causal_output_dict}
+    
+            Each causal_output_dict should include:
+              - "causal_metrics": dataclass or dict
+              - "overlap": dict from overlap_diagnostics (namespaced keys)
+    
+        include_effect : bool, default=True
+            Whether to include treatment effect metrics.
+    
+        include_bias : bool, default=True
+            Whether to include confounding bias metrics.
+    
+        include_overlap : bool, default=True
+            Whether to include overlap diagnostics.
+    
+        include_directions : bool, default=True
+            Whether to include the "Direction" column.
+    
+        single_default_name : str, default="BGMM"
+            Default model name if `causal_results` is a single model output.
+        """
     models = _models_to_dict(causal_results, single_default_name=single_default_name)
 
-    rows = [
-        # ---- Treatment effect ----
+    rows = []
+    if include_effect:
+        rows.extend([
         ("Treatment Effect", "CATE/ITE MAE",
-         "↓ better",
-         ("ce", "mae_tau")),
+            "↓ better",
+            ("ce", "mae_tau")),
         ("Treatment Effect", "CATE Correlation",
-         "↑ better",
-         ("ce", "corr_tau")),
+            "↑ better",
+            ("ce", "corr_tau")),
         ("Treatment Effect", "ATE Error",
-         "↓ better",
-         ("ce", "ate_abs_error")),
+            "↓ better",
+            ("ce", "ate_abs_error")),
         ("Treatment Effect", "TE Distribution Distance (W1)",
-         "↓ better",
-         ("ce", "tau_wasserstein")),
+            "↓ better",
+            ("ce", "tau_wasserstein")),
+        ])
+    if include_bias:
+        rows.extend([
+            ("Confounding", "Confounding MAE", "↓ better", ("ce", "mae_kappa")),
+            ("Confounding", "Group-wise MAE (T=0)", "↓ better", ("ce", "mae_kappa_t0")),
+            ("Confounding", "Group-wise MAE (T=1)", "↓ better", ("ce", "mae_kappa_t1")),
+            ("Confounding", "Confounding Dist. (W1)", "↓ better", ("ce", "kappa_wasserstein")),
+        ])
+    if include_overlap:
+        rows.extend([
+            # Overlap (decoder)
+            ("Overlap (decoder)", "MSE", "↓ better", ("ov", "dec/mse_to_target")),
+            ("Overlap (decoder)", "Fraction within tolerance", "↑ better", ("ov", "dec/fraction_within_tol")),
 
-        # ---- Confounding ----
-        ("Confounding", "Confounding MAE",
-         "↓ better",
-         ("ce", "mae_kappa")),
-        ("Confounding", "Group-wise MAE (T=0)",
-         "↓ better",
-         ("ce", "mae_kappa_t0")),
-        ("Confounding", "Group-wise MAE (T=1)",
-         "↓ better",
-         ("ce", "mae_kappa_t1")),
-        ("Confounding", "Confounding Dist. (W1)",
-         "↓ better",
-         ("ce", "kappa_wasserstein")),
+            # Overlap (propensity)
+            ("Overlap (propensity)", "Propensity AUC", "NA", ("ov", "ps/auc")),
+            ("Overlap (propensity)", "Histogram overlap coefficient", "↑ better", ("ov", "ps/hist_overlap_coeff")),
+            ("Overlap (propensity)", "Common support fraction", "↑ better", ("ov", "ps/frac_common_support")),
+            ("Overlap (propensity)", "Common support fraction (T=0)", "↑ better", ("ov", "ps/frac_common_support_t0")),
+            ("Overlap (propensity)", "Common support fraction (T=1)", "↑ better", ("ov", "ps/frac_common_support_t1")),
+        ])
+    if not rows:
+        cols = ["Category", "Metric"]
+        if include_directions:
+            cols.append("Direction")
+        cols.extend(models.keys())
+        return pd.DataFrame(columns=cols)
 
-        # ---- Overlap (decoder) ----
-        ("Overlap (decoder)", "MSE",
-         "↓ better",
-         ("ov", "dec/mse_to_target")),
-        ("Overlap (decoder)", "Fraction within tolerance",
-         "↑ better",
-         ("ov", "dec/fraction_within_tol")),
+    # rows = [
+    #     # ---- Treatment effect ----
+    #     ("Treatment Effect", "CATE/ITE MAE",
+    #      "↓ better",
+    #      ("ce", "mae_tau")),
+    #     ("Treatment Effect", "CATE Correlation",
+    #      "↑ better",
+    #      ("ce", "corr_tau")),
+    #     ("Treatment Effect", "ATE Error",
+    #      "↓ better",
+    #      ("ce", "ate_abs_error")),
+    #     ("Treatment Effect", "TE Distribution Distance (W1)",
+    #      "↓ better",
+    #      ("ce", "tau_wasserstein")),
 
-        # ---- Overlap (propensity) ----
-        ("Overlap (propensity)", "Propensity AUC",
-         "NA",
-         ("ov", "ps/auc")),
-        ("Overlap (propensity)", "Histogram overlap coefficient",
-         "↑ better",
-         ("ov", "ps/hist_overlap_coeff")),
-        ("Overlap (propensity)", "Common support fraction",
-         "↑ better",
-         ("ov", "ps/frac_common_support")),
-        ("Overlap (propensity)", "Common support fraction (T=0)",
-         "↑ better",
-         ("ov", "ps/frac_common_support_t0")),
-        ("Overlap (propensity)", "Common support fraction (T=1)",
-         "↑ better",
-         ("ov", "ps/frac_common_support_t1")),
-    ]
+    #     # ---- Confounding ----
+    #     ("Confounding", "Confounding MAE",
+    #      "↓ better",
+    #      ("ce", "mae_kappa")),
+    #     ("Confounding", "Group-wise MAE (T=0)",
+    #      "↓ better",
+    #      ("ce", "mae_kappa_t0")),
+    #     ("Confounding", "Group-wise MAE (T=1)",
+    #      "↓ better",
+    #      ("ce", "mae_kappa_t1")),
+    #     ("Confounding", "Confounding Dist. (W1)",
+    #      "↓ better",
+    #      ("ce", "kappa_wasserstein")),
+
+    #     # ---- Overlap (decoder) ----
+    #     ("Overlap (decoder)", "MSE",
+    #      "↓ better",
+    #      ("ov", "dec/mse_to_target")),
+    #     ("Overlap (decoder)", "Fraction within tolerance",
+    #      "↑ better",
+    #      ("ov", "dec/fraction_within_tol")),
+
+    #     # ---- Overlap (propensity) ----
+    #     ("Overlap (propensity)", "Propensity AUC",
+    #      "NA",
+    #      ("ov", "ps/auc")),
+    #     ("Overlap (propensity)", "Histogram overlap coefficient",
+    #      "↑ better",
+    #      ("ov", "ps/hist_overlap_coeff")),
+    #     ("Overlap (propensity)", "Common support fraction",
+    #      "↑ better",
+    #      ("ov", "ps/frac_common_support")),
+    #     ("Overlap (propensity)", "Common support fraction (T=0)",
+    #      "↑ better",
+    #      ("ov", "ps/frac_common_support_t0")),
+    #     ("Overlap (propensity)", "Common support fraction (T=1)",
+    #      "↑ better",
+    #      ("ov", "ps/frac_common_support_t1")),
+    # ]
 
     out_rows = []
     for category, metric, direction, (src, key) in rows:
