@@ -83,10 +83,10 @@ class conVAE(pl.LightningModule):
         }
         self.max_bound = max_bound
 
-        if self.overlap_weight > 0:
-            self.T_col = [i for i in range(self.con_dim) if Xnames[i] in treatment_cols]
-            # update January 13, 2026: to add covariate index for function specification
-            self.index = VarIndex(Ynames)
+        # if self.overlap_weight > 0:
+        self.T_col = [i for i in range(self.con_dim) if Xnames[i] in treatment_cols]
+        # update January 13, 2026: to add covariate index for function specification
+        self.index = VarIndex(Ynames)   
             
 
         # if generating potential outcomes then add constraints for user defined treatment effects and selection bias function
