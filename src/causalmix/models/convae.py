@@ -262,8 +262,12 @@ class conVAE(pl.LightningModule):
             if len(self.continuous_output_idx):
                 mu_stack = torch.stack([cont_mu[i]     for i in self.continuous_output_idx], dim=1)  # [B, Vc, 2]
                 lv_stack = torch.stack([cont_logvar[i] for i in self.continuous_output_idx], dim=1)  # [B, Vc, 2]
-                mu_obs = mu_stack[:, :, 0] * (1 - Tcol.squeeze(-1)) + mu_stack[:, :, 1] * Tcol.squeeze(-1)  # [B, Vc]
-                lv_obs = lv_stack[:, :, 0] * (1 - Tcol.squeeze(-1)) + lv_stack[:, :, 1] * Tcol.squeeze(-1)  # [B, Vc]
+                # update 8/24/2026: Keep treatment variable shape [B, 1] so treatment broadcasts across outcome dimensions,
+                # not across observations.
+                # mu_obs = mu_stack[:, :, 0] * (1 - Tcol.squeeze(-1)) + mu_stack[:, :, 1] * Tcol.squeeze(-1)  # [B, Vc]
+                # lv_obs = lv_stack[:, :, 0] * (1 - Tcol.squeeze(-1)) + lv_stack[:, :, 1] * Tcol.squeeze(-1)  # [B, Vc]
+                mu_obs = mu_stack[:, :, 0] * (1 - Tcol) + mu_stack[:, :, 1] * Tcol  # [B, Vc]
+                lv_obs = lv_stack[:, :, 0] * (1 - Tcol) + lv_stack[:, :, 1] * Tcol  # [B, Vc]
                 y_true = y[:, self.continuous_output_idx]  # [B, Vc]
                 nll = 0.5 * (torch.exp(-lv_obs) * (y_true - mu_obs) ** 2 + lv_obs + LOG_2PI)
                 loss += nll.mean()
