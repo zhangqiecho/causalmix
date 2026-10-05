@@ -547,7 +547,23 @@ class conVAE(pl.LightningModule):
                 out_p = out_p.view(-1, 2, base_dim)
     
                 # For constraints we just need the same packing (no need to compute var heads here)
-                outputs_prime.append(out_p.view(-1, 2 * base_dim))
+                # outputs_prime.append(out_p.view(-1, 2 * base_dim)) # missing the use of _activate_continuous_mean function
+                # update July 30, 2026: apply _activate_continuous_mean function to continuous outcomes
+                if i in self.binary_output_idx:
+                    # Keep logits here. The loss function applies sigmoid to both
+                    # the ordinary and flipped-treatment binary outputs.
+                    outputs_prime.append(
+                        out_p.view(-1, 2 * base_dim)
+                    )
+                else:
+                    # Continuous flipped-treatment outputs must use the same
+                    # activation/bounds as the ordinary potential-outcome means.
+                    mu_p_raw = out_p.squeeze(-1)          # [B, 2]
+                    mu_p = self._activate_continuous_mean(
+                        i,
+                        mu_p_raw,
+                    )
+                    outputs_prime.append(mu_p)
     
             y_hat_prime = torch.cat(outputs_prime, dim=1)
     
