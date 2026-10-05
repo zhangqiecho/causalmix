@@ -84,7 +84,8 @@ class CausalMix:
     def fit(
         self,
         # latent_dim=4,
-        hidden_dim=[64],
+        hidden_dim_pre=[64],
+        hidden_dim_post=[64],
         batch_size=10,
         treatment_effect_fn=lambda x, index: 0,
         selection_bias_fn=lambda x, t, index: 0,
@@ -133,7 +134,7 @@ class CausalMix:
             categorical_dims=self.categorical_dims,      # QZ: dict {col_name: num_classes}
             var_bounds=self.var_bounds,
             latent_dim=self.X_latent,
-            hidden_dim=hidden_dim,
+            hidden_dim=hidden_dim_pre,
             batch_size=batch_size,
             potential_outcome=False,
             overlap_weight=overlap_weight,
@@ -154,7 +155,7 @@ class CausalMix:
             categorical_dims=self.categorical_dims,      # dict {col_name: num_classes}
             var_bounds=self.var_bounds,
             latent_dim= self.Y_latent,
-            hidden_dim=hidden_dim,
+            hidden_dim=hidden_dim_post,
             batch_size=batch_size,
             potential_outcome=True,
             treatment_cols=self.Tnames,
